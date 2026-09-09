@@ -19,8 +19,9 @@ public class TaskModel {
     @GeneratedValue(generator = "UUID")
     private UUID ID;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String title;
+
     private String description;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
@@ -28,5 +29,13 @@ public class TaskModel {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     private UUID userId;
+
+    public void setTitle(String title) throws Exception {
+        if (title.length() > 50) {
+            throw new Exception("title cannot be longer than 50 characters");
+        }
+        this.title = title;
+    }
 }
