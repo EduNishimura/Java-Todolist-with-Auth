@@ -5,31 +5,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private IUserRepository userRepository;
+    private UserService userService; // UserService is a service class that handles user-related operations. It has a
+                                     // dependency on IUserRepository, which is injected through the constructor.
+                                     // This allows the service to access the methods defined in the repository for
+                                     // performing CRUD operations on users.
+
+    public UserController(UserService userService) {
+        this.userService = userService; // UserController is a REST controller that handles HTTP requests related to
+                                        // users. It has a dependency on UserService, which is injected through the
+                                        // constructor. This allows the controller to access the methods defined in the
+                                        // service for performing user-related operations.
+    }
 
     @PostMapping("/")
-    public ResponseEntity createUser(@RequestBody UserModel userModel) {
-        var user = this.userRepository.findByUsername(userModel.getUsername());
-
-        if (user != null) {
-            System.out.println("Este user name ja foi registrado");
-            return ResponseEntity.badRequest().body("Este Usuario ja foi registrado");
+    public ResponseEntity<?> createUser(@RequestBody UserModel userModel) {
+        try {
+            var user = this.userService.create(userModel);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        var hashedPassword = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
-
-        userModel.setPassword(hashedPassword);
-
-        var userCreated = this.userRepository.save(userModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 }

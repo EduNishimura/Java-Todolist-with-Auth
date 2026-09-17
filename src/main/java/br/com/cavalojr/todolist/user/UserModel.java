@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+// jakarta.persistence package provides annotations for defining the mapping between Java classes and database tables.
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,8 @@ import lombok.Data;
 
 @Data // The @Data annotation from Lombok generates boilerplate code such as getters,
       // setters, equals, hashCode, and toString methods.
-@Entity(name = "tb_users")
+@Entity(name = "tb_users") // The @Entity annotation specifies that this class is a JPA entity and will be
+                           // mapped to a database table named "tb_users".
 public class UserModel {
 
     @Id // The @Id annotation indicates that the id field is the primary key of the
@@ -26,7 +28,8 @@ public class UserModel {
                                         // automatically generated using a UUID generator.
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) // The @Column annotation is used to specify the mapping of the username
+                                             // field to a database column.
     private String username;
     @Column(nullable = false)
     private String name;

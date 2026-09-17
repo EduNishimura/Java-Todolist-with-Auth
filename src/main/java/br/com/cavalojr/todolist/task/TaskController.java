@@ -25,14 +25,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 // The TaskController class is a REST controller that handles HTTP requests related to tasks.
 // it is annotated with @RestController to indicate that it is a Spring MVC controller and will handle HTTP requests.
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/tasks") // @RequestMapping specifies the base URL path for all the endpoints in this
+                          // controller.
 public class TaskController {
 
-    @Autowired
+    @Autowired // @Autowired is used to inject the ITaskRepository dependency into the
+               // TaskController class. This allows the controller to access the methods
+               // defined in the repository for performing CRUD operations on tasks.
     private ITaskRepository taskRepository;
 
     @PostMapping("/")
     public ResponseEntity createTask(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+        // @RequestBody is used to bind the incoming json request body to the taskModel
+        // parameter
+        // HttpServletRequest is used to access the HTTP request and retrieve the userId
+        // attribute set by the authentication filter.
 
         var userId = request.getAttribute("userId");
         taskModel.setUserId((UUID) userId);
