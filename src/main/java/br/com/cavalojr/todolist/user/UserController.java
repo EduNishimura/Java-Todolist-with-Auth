@@ -11,16 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/users")
 public class UserController {
 
-    private UserService userService; // UserService is a service class that handles user-related operations. It has a
-                                     // dependency on IUserRepository, which is injected through the constructor.
-                                     // This allows the service to access the methods defined in the repository for
-                                     // performing CRUD operations on users.
+    private final UserService userService; // atribute that holds an instance of the UserService class, which is
+                                           // responsible for handling user-related operations.
 
-    public UserController(UserService userService) {
-        this.userService = userService; // UserController is a REST controller that handles HTTP requests related to
-                                        // users. It has a dependency on UserService, which is injected through the
-                                        // constructor. This allows the controller to access the methods defined in the
-                                        // service for performing user-related operations.
+    public UserController(UserService userService) { // constructor that receives an instance of the UserService class
+                                                     // as a parameter and assigns it to the userService attribute. This
+                                                     // allows the controller to use the methods defined in the service
+                                                     // for handling user-related requests.
+        this.userService = userService;
     }
 
     @PostMapping("/")

@@ -2,7 +2,6 @@ package br.com.cavalojr.todolist.task;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,60 +28,51 @@ import org.springframework.web.bind.annotation.PathVariable;
                           // controller.
 public class TaskController {
 
-    @Autowired // @Autowired is used to inject the ITaskRepository dependency into the
-               // TaskController class. This allows the controller to access the methods
-               // defined in the repository for performing CRUD operations on tasks.
-    private ITaskRepository taskRepository;
+    private final TaskService taskService; // The TaskController class has a dependency on the TaskService class, which
+                                           // is injected through the constructor. This allows the controller to access
+                                           // the methods defined in the service for performing task-related operations.
+
+    public TaskController(TaskService taskService) { // The constructor receives an instance of the TaskService class as
+                                                     // a parameter and assigns it to the taskService attribute.
+        this.taskService = taskService;
+    }
 
     @PostMapping("/")
-    public ResponseEntity createTask(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+    public ResponseEntity<?> createTask(@RequestBody TaskModel taskModel, HttpServletRequest request) {
         // @RequestBody is used to bind the incoming json request body to the taskModel
         // parameter
         // HttpServletRequest is used to access the HTTP request and retrieve the userId
         // attribute set by the authentication filter.
-
-        var userId = request.getAttribute("userId");
-        taskModel.setUserId((UUID) userId);
-
-        var currentDate = java.time.LocalDateTime.now();
-        if (currentDate.isAfter(taskModel.getStartAt()) || currentDate.isAfter(taskModel.getEndAt())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date and end date cannot be in the past.");
+        try {
+            var userId = request.getAttribute("userId");
+            var task = this.taskService.create(taskModel, (UUID) userId);
+            return ResponseEntity.ok(task);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        if (taskModel.getStartAt().isAfter(taskModel.getEndAt())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be after end date.");
-        }
-
-        var task = this.taskRepository.save(taskModel);
-        return ResponseEntity.ok(task);
     }
 
     @GetMapping("/")
-    public List<TaskModel> getTasksByUserId(HttpServletRequest request) {
-        var userId = request.getAttribute("userId");
-        var task = this.taskRepository.findByUserId((UUID) userId);
-        return task;
+    public ResponseEntity<?> getTasksByUserId(HttpServletRequest request) {
+        try {
+            var userId = request.getAttribute("userId");
+            var task = this.taskService.readByUserId((UUID) userId);
+            return ResponseEntity.ok(task);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity putMethodName(@PathVariable UUID id, @RequestBody TaskModel taskModel,
+    public ResponseEntity<?> putMethodName(@PathVariable UUID id, @RequestBody TaskModel taskModel,
             HttpServletRequest request) {
 
-        var task = this.taskRepository.findById(id).orElse(null);
-
-        if (task == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        try {
+            var taskUpdated = this.taskService.update(id, taskModel, (UUID) request.getAttribute("userId"));
+            return ResponseEntity.ok(taskUpdated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        var userId = request.getAttribute("userId");
-        if (!task.getUserId().equals(userId)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User has no permission to update this task");
-
-        }
-
-        Utils.copyNonNullProperties(taskModel, task);
-        var taskUpdated = this.taskRepository.save(task);
-        return ResponseEntity.ok().body(this.taskRepository.save(taskUpdated));
     }
 
 }

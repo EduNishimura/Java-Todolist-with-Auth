@@ -10,11 +10,10 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 public class UserService {
     private final IUserRepository userRepository; //
 
-    public UserService(IUserRepository userRepository) {
-        this.userRepository = userRepository; // UserService is a service class that handles user-related operations. It
-                                              // has a dependency on IUserRepository, which is injected through the
-                                              // constructor. This allows the service to access the methods defined in
-                                              // the repository for performing CRUD operations on users.
+    public UserService(IUserRepository userRepository) { // metodo construtor que recebe uma instancia de
+                                                         // IUserRepository como parametro e atribui a variavel
+                                                         // userRepository
+        this.userRepository = userRepository;
     }
 
     public UserModel create(UserModel userModel) { // This method creates a new user
@@ -28,6 +27,8 @@ public class UserService {
         var hashedPassword = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
         userModel.setPassword(hashedPassword);
         //
-        return this.userRepository.save(userModel);
+
+        var createdUser = this.userRepository.save(userModel);
+        return createdUser;
     }
 }
