@@ -13,19 +13,23 @@ public class UserController {
 
     private final UserService userService; // atribute that holds an instance of the UserService class, which is
                                            // responsible for handling user-related operations.
+    private final UserMapper userMapper; // atribute that holds an instance of the UserMapper class, which is
+                                         // responsible for mapping between UserDTO and UserModel objects.
 
-    public UserController(UserService userService) { // constructor that receives an instance of the UserService class
-                                                     // as a parameter and assigns it to the userService attribute. This
-                                                     // allows the controller to use the methods defined in the service
-                                                     // for handling user-related requests.
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createUser(@RequestBody UserModel userModel) {
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) { // method that handles HTTP POST requests to
+                                                                        // create a new user. It receives a UserDTO
+                                                                        // object in the request body, which contains
+                                                                        // the user data to be created.
         try {
+            var userModel = this.userMapper.toModel(userDTO);
             var user = this.userService.create(userModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(this.userMapper.toDTO(user));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

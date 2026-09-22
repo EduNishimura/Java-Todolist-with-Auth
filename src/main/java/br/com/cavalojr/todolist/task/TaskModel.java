@@ -35,6 +35,7 @@ public class TaskModel {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private UUID userId;
 
     public void setTitle(String title) throws Exception {

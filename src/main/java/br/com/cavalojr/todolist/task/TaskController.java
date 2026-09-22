@@ -76,7 +76,6 @@ public class TaskController {
 
         try {
             var userId = request.getAttribute("userId");
-            System.out.println("update method - user ID:" + userId);
             var taskModel = this.taskMapper.toModel(taskDTO);
             var taskUpdated = this.taskService.update(id, taskModel, (UUID) userId);
             var taskDTOUpdated = this.taskMapper.toDTO(taskUpdated);
