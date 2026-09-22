@@ -32,44 +32,55 @@ public class TaskController {
                                            // is injected through the constructor. This allows the controller to access
                                            // the methods defined in the service for performing task-related operations.
 
-    public TaskController(TaskService taskService) { // The constructor receives an instance of the TaskService class as
-                                                     // a parameter and assigns it to the taskService attribute.
+    private final TaskMapper taskMapper;
+
+    public TaskController(TaskService taskService, TaskMapper taskMapper) { // The constructor receives an instance of
+                                                                            // the TaskService class as
+        // a parameter and assigns it to the taskService attribute.
         this.taskService = taskService;
+        this.taskMapper = taskMapper;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> createTask(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+    @PostMapping
+    public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDTO, HttpServletRequest request) {
         // @RequestBody is used to bind the incoming json request body to the taskModel
         // parameter
         // HttpServletRequest is used to access the HTTP request and retrieve the userId
         // attribute set by the authentication filter.
         try {
             var userId = request.getAttribute("userId");
+            var taskModel = this.taskMapper.toModel(taskDTO);
             var task = this.taskService.create(taskModel, (UUID) userId);
-            return ResponseEntity.ok(task);
+            var taskDTOResponse = this.taskMapper.toDTO(task);
+            return ResponseEntity.ok(taskDTOResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getTasksByUserId(HttpServletRequest request) {
         try {
             var userId = request.getAttribute("userId");
             var task = this.taskService.readByUserId((UUID) userId);
-            return ResponseEntity.ok(task);
+            var taskDTOlist = task.stream().map(taskModel -> this.taskMapper.toDTO(taskModel)).toList();
+            return ResponseEntity.ok(taskDTOlist);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> putMethodName(@PathVariable UUID id, @RequestBody TaskModel taskModel,
+    public ResponseEntity<?> putMethodName(@PathVariable UUID id, @RequestBody TaskDTO taskDTO,
             HttpServletRequest request) {
 
         try {
-            var taskUpdated = this.taskService.update(id, taskModel, (UUID) request.getAttribute("userId"));
-            return ResponseEntity.ok(taskUpdated);
+            var userId = request.getAttribute("userId");
+            System.out.println("update method - user ID:" + userId);
+            var taskModel = this.taskMapper.toModel(taskDTO);
+            var taskUpdated = this.taskService.update(id, taskModel, (UUID) userId);
+            var taskDTOUpdated = this.taskMapper.toDTO(taskUpdated);
+            return ResponseEntity.ok(taskDTOUpdated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

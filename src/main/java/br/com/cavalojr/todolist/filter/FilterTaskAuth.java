@@ -17,10 +17,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class FilterTaskAuth extends OncePerRequestFilter {
 
-    @Autowired
+    @Autowired // Injeta a dependência do IUserRepository para que possamos acessar o banco de
+               // dados e validar o usuário.
     private IUserRepository userRepository;
 
-    @Override
+    @Override // Sobrescreve o método doFilterInternal da classe OncePerRequestFilter para
+              // implementar a lógica de autenticação.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 

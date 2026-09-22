@@ -32,8 +32,7 @@ public class TaskService {
     }
 
     public List<TaskModel> readByUserId(UUID userId) {
-        var task = this.taskRepository.findByUserId(userId);
-        return task;
+        return taskRepository.findByUserId(userId);
     }
 
     public TaskModel update(UUID taskId, TaskModel taskModel, UUID userId) {

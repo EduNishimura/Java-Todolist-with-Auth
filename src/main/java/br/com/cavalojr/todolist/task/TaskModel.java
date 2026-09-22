@@ -23,8 +23,13 @@ public class TaskModel {
     private String title;
 
     private String description;
+
+    @Column(nullable = false)
     private LocalDateTime startAt;
+
+    @Column(nullable = false)
     private LocalDateTime endAt;
+
     private String priority;
 
     @CreationTimestamp
