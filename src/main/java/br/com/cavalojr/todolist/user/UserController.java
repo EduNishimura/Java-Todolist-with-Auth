@@ -1,6 +1,9 @@
 package br.com.cavalojr.todolist.user;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,17 +25,19 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) { // method that handles HTTP POST requests to
-                                                                        // create a new user. It receives a UserDTO
-                                                                        // object in the request body, which contains
-                                                                        // the user data to be created.
-        try {
-            var userModel = this.userMapper.toModel(userDTO);
-            var user = this.userService.create(userModel);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("User created: " + this.userMapper.toDTO(user).getUsername());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO) { // method that handles HTTP POST requests
+                                                                               // to
+        // create a new user. It receives a UserDTO
+        // object in the request body, which contains
+        // the user data to be created.
+        var userModel = this.userMapper.toModel(userDTO);
+        var user = this.userService.create(userModel);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(this.userMapper.toResponseDTO(user)); // The method returns a
+                                                            // ResponseEntity with a
+                                                            // status
+        // code of 201 (Created) and a message indicating
+        // that the user has been created, along with the
+        // username of the created user.
     }
 }

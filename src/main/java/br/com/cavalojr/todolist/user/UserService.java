@@ -3,6 +3,7 @@ package br.com.cavalojr.todolist.user;
 import org.springframework.stereotype.Service;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import br.com.cavalojr.todolist.errors.ConflictException;
 
 @Service // The @Service annotation indicates that this class is a service component in
          // the Spring application context. It is used to define business logic and can
@@ -21,7 +22,7 @@ public class UserService {
 
         if (user != null) {
             System.out.println("Este user name ja foi registrado");
-            throw new IllegalArgumentException("This username has already been registered");
+            throw new ConflictException("This username has already been registered.");
         }
 
         var hashedPassword = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());

@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.com.cavalojr.todolist.utils.Utils;
+import br.com.cavalojr.todolist.errors.ForbiddenException;
+import br.com.cavalojr.todolist.errors.ResourceNotFoundException;
 import java.util.List;
 
 @Service
@@ -39,11 +41,11 @@ public class TaskService {
         var task = this.taskRepository.findById(taskId).orElse(null);
 
         if (task == null) {
-            throw new IllegalArgumentException("Task not found");
+            throw new ResourceNotFoundException("Task not found.");
         }
 
         if (!task.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("User has no permission to update this task");
+            throw new ForbiddenException("User has no permission to update this task.");
         }
 
         Utils.copyNonNullProperties(taskModel, task);

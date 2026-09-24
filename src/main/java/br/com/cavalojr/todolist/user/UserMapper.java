@@ -19,4 +19,11 @@ public class UserMapper {
         userModel.setPassword(userDTO.getPassword());
         return userModel;
     }
+
+    public UserResponseDTO toResponseDTO(UserModel userModel) {
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setName(userModel.getName());
+        userResponseDTO.setUsername(userModel.getUsername());
+        return userResponseDTO;
+    }
 }
