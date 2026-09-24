@@ -29,7 +29,8 @@ public class UserController {
         try {
             var userModel = this.userMapper.toModel(userDTO);
             var user = this.userService.create(userModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.userMapper.toDTO(user));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("User created: " + this.userMapper.toDTO(user).getUsername());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

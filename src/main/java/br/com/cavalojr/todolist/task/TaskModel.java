@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class TaskModel {
     @Id
     @GeneratedValue(generator = "UUID")
-    private UUID ID;
+    private UUID Id;
 
     @Column(length = 50)
     private String title;

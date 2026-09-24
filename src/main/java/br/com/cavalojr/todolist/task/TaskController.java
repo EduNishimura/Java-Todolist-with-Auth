@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -63,7 +61,7 @@ public class TaskController {
         try {
             var userId = request.getAttribute("userId");
             var task = this.taskService.readByUserId((UUID) userId);
-            var taskDTOlist = task.stream().map(taskModel -> this.taskMapper.toDTO(taskModel)).toList();
+            var taskDTOlist = task.stream().map(taskModel -> this.taskMapper.toResponseDTO(taskModel)).toList();
             return ResponseEntity.ok(taskDTOlist);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -78,11 +76,10 @@ public class TaskController {
             var userId = request.getAttribute("userId");
             var taskModel = this.taskMapper.toModel(taskDTO);
             var taskUpdated = this.taskService.update(id, taskModel, (UUID) userId);
-            var taskDTOUpdated = this.taskMapper.toDTO(taskUpdated);
-            return ResponseEntity.ok(taskDTOUpdated);
+            var taskResponseDTOUpdated = this.taskMapper.toResponseDTO(taskUpdated);
+            return ResponseEntity.ok(taskResponseDTOUpdated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

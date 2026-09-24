@@ -3,7 +3,6 @@ package br.com.cavalojr.todolist.filter;
 import java.io.IOException;
 import java.util.Base64;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,9 +16,15 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class FilterTaskAuth extends OncePerRequestFilter {
 
-    @Autowired // Injeta a dependência do IUserRepository para que possamos acessar o banco de
-               // dados e validar o usuário.
-    private IUserRepository userRepository;
+    private final IUserRepository userRepository;
+
+    public FilterTaskAuth(IUserRepository userRepository) { // constructor that receives an instance of the
+                                                            // IUserRepository interface as a parameter and assigns it
+                                                            // to the userRepository attribute. This allows the filter
+                                                            // to access the user repository for authentication
+                                                            // purposes.
+        this.userRepository = userRepository;
+    }
 
     @Override // Sobrescreve o método doFilterInternal da classe OncePerRequestFilter para
               // implementar a lógica de autenticação.
