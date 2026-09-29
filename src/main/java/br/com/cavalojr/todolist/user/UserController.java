@@ -24,7 +24,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO) { // method that handles HTTP POST requests
                                                                                // to
         // create a new user. It receives a UserDTO

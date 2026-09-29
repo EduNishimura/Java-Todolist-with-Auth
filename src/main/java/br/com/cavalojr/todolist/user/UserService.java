@@ -18,7 +18,7 @@ public class UserService {
     }
 
     public UserModel create(UserModel userModel) { // This method creates a new user
-        var user = this.userRepository.findByUsername(userModel.getUsername());
+        var user = this.userRepository.findByEmail(userModel.getEmail());
 
         if (user != null) {
             System.out.println("Este user name ja foi registrado");

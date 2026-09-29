@@ -15,9 +15,7 @@ import lombok.Data;
 
 // Model: class that represents the data structure of a user in the application.
 // Is annotated with @Entity to indicate that it is a JPA entity and will be mapped to a database table named "tb_users".
-
-@Data // The @Data annotation from Lombok generates boilerplate code such as getters,
-      // setters, equals, hashCode, and toString methods.
+@Data
 @Entity(name = "tb_users") // The @Entity annotation specifies that this class is a JPA entity and will be
                            // mapped to a database table named "tb_users".
 public class UserModel {
@@ -28,9 +26,10 @@ public class UserModel {
                                         // automatically generated using a UUID generator.
     private UUID id;
 
-    @Column(nullable = false, unique = true) // The @Column annotation is used to specify the mapping of the username
+    @Column(nullable = false, unique = true) // The @Column annotation is used to specify the mapping of the email
                                              // field to a database column.
-    private String username;
+    private String email;
+
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

@@ -54,7 +54,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             System.out.println("Password: " + password);
 
             // Validar o usuario
-            var user = this.userRepository.findByUsername(username);
+            var user = this.userRepository.findByEmail(username);
             if (user == null) {
                 response.sendError(401);
             } else {

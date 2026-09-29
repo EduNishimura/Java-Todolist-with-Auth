@@ -7,7 +7,7 @@ public class UserMapper {
     public UserDTO toDTO(UserModel userModel) {
         UserDTO userDTO = new UserDTO();
         userDTO.setName(userModel.getName());
-        userDTO.setUsername(userModel.getUsername());
+        userDTO.setEmail(userModel.getEmail());
         userDTO.setPassword(userModel.getPassword());
         return userDTO;
     }
@@ -15,7 +15,7 @@ public class UserMapper {
     public UserModel toModel(UserDTO userDTO) {
         UserModel userModel = new UserModel();
         userModel.setName(userDTO.getName());
-        userModel.setUsername(userDTO.getUsername());
+        userModel.setEmail(userDTO.getEmail());
         userModel.setPassword(userDTO.getPassword());
         return userModel;
     }
@@ -23,7 +23,7 @@ public class UserMapper {
     public UserResponseDTO toResponseDTO(UserModel userModel) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setName(userModel.getName());
-        userResponseDTO.setUsername(userModel.getUsername());
+        userResponseDTO.setEmail(userModel.getEmail());
         return userResponseDTO;
     }
 }
