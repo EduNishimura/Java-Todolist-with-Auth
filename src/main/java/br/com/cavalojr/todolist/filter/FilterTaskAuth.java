@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Base64;
 
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.com.cavalojr.todolist.user.IUserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,13 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class FilterTaskAuth extends OncePerRequestFilter {
 
     private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public FilterTaskAuth(IUserRepository userRepository) { // constructor that receives an instance of the
-                                                            // IUserRepository interface as a parameter and assigns it
-                                                            // to the userRepository attribute. This allows the filter
-                                                            // to access the user repository for authentication
-                                                            // purposes.
+    public FilterTaskAuth(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override // Sobrescreve o método doFilterInternal da classe OncePerRequestFilter para
@@ -60,15 +58,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             } else {
 
                 // Validar senha
-                var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword()); // Verifica
-                                                                                                           // se a senha
-                                                                                                           // fornecida
-                                                                                                           // corresponde
-                                                                                                           // ao hash
-                                                                                                           // armazenado
-                                                                                                           // no banco
-                                                                                                           // de dados
-                if (passwordVerify.verified) {
+                if (passwordEncoder.matches(password, user.getPassword())) {
                     request.setAttribute("userId", user.getId());
                     filterChain.doFilter(request, response);
                 } else {

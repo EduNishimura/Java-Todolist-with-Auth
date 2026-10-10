@@ -1,8 +1,7 @@
 package br.com.cavalojr.todolist.user;
 
 import org.springframework.stereotype.Service;
-
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import br.com.cavalojr.todolist.errors.ConflictException;
 
 @Service // The @Service annotation indicates that this class is a service component in
@@ -10,11 +9,11 @@ import br.com.cavalojr.todolist.errors.ConflictException;
          // be injected into other components, such as controllers or other services.
 public class UserService {
     private final IUserRepository userRepository; //
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(IUserRepository userRepository) { // metodo construtor que recebe uma instancia de
-                                                         // IUserRepository como parametro e atribui a variavel
-                                                         // userRepository
+    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserModel create(UserModel userModel) { // This method creates a new user
@@ -25,7 +24,7 @@ public class UserService {
             throw new ConflictException("This username has already been registered.");
         }
 
-        var hashedPassword = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
+        var hashedPassword = passwordEncoder.encode(userModel.getPassword());
         userModel.setPassword(hashedPassword);
         //
 
