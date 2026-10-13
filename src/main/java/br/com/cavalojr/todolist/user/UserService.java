@@ -31,4 +31,19 @@ public class UserService {
         var createdUser = this.userRepository.save(userModel);
         return createdUser;
     }
+
+    public String login(String email, String password) {
+        var user = this.userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new ConflictException("User not found.");
+        }
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ConflictException("Invalid password.");
+        }
+
+        // Generate and return a token or session for the authenticated user
+        return "VOCE E DOS VERDADEIRO"; // Replace with actual token generation logic
+    }
 }

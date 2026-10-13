@@ -25,6 +25,7 @@ public class SecurityConfig {
                                               // to prevent unauthorized requests.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .build();
     }

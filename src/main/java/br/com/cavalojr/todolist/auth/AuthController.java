@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.cavalojr.todolist.user.UserService;
 import jakarta.validation.Valid;
@@ -34,8 +33,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String getMethodName(@RequestParam String param) {
-        return new String();
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
+        // Implementation for login logic
+        var token = this.userService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        return ResponseEntity.ok().body(token);
     }
 
 }
